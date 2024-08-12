@@ -1,3 +1,6 @@
+import sys
+sys.path.append('I:/projects/wiseflow')
+sys.path.append('I:/projects/wiseflow/core')
 from fastapi import FastAPI
 from pydantic import BaseModel
 from __init__ import BackendService

@@ -37,7 +37,7 @@ class PbTalker:
                                                                         "skiptotal": skiptotal})
 
             except Exception as e:
-                self.logger.error(f"pocketbase get list failed: {e}")
+                self.logger.error(f"pocketbase get list failed: {e} {collection_name} {filter}")
                 continue
             if not res.items:
                 break

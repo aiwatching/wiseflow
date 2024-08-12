@@ -1,7 +1,7 @@
 import random
 import re
 import os
-from core.backend import dashscope_llm
+# from core.backend import dashscope_llm
 from docx import Document
 from docx.oxml.ns import qn
 from docx.shared import Pt, RGBColor
@@ -10,7 +10,7 @@ from datetime import datetime
 from general_utils import isChinesePunctuation
 from general_utils import get_logger_level
 from loguru import logger
-from pb_api import PbTalker
+from core.utils.pb_api import PbTalker
 
 project_dir = os.environ.get("PROJECT_DIR", "")
 os.makedirs(project_dir, exist_ok=True)
@@ -120,20 +120,20 @@ def get_report(insigt: str, articles: list[dict], memory: str, topics: list[str]
     check_list = schema.split('\n\n')
     check_list = [_[1:] for _ in check_list if _.startswith('【')]
     result = ''
-    for i in range(2):
-        result = dashscope_llm([{'role': 'system', 'content': system_prompt}, {'role': 'user', 'content': user_prompt}],
-                               'qwen1.5-72b-chat', seed=random.randint(1, 10000), logger=logger)
-        logger.debug(f"raw result:\n{result}")
-        if len(result) > 50:
-            check_flag = True
-            for check_item in check_list[2:]:
-                if check_item not in result:
-                    check_flag = False
-                    break
-        if check_flag:
-            break
+    # for i in range(2):
+    #     result = dashscope_llm([{'role': 'system', 'content': system_prompt}, {'role': 'user', 'content': user_prompt}],
+    #                            'qwen1.5-72b-chat', seed=random.randint(1, 10000), logger=logger)
+    #     logger.debug(f"raw result:\n{result}")
+    #     if len(result) > 50:
+    #         check_flag = True
+    #         for check_item in check_list[2:]:
+    #             if check_item not in result:
+    #                 check_flag = False
+    #                 break
+    #     if check_flag:
+    #         break
 
-        logger.debug("result not good, re-generating...")
+    #     logger.debug("result not good, re-generating...")
 
     if not check_flag:
         # 这里其实存在两种情况，一个是llm失效，一个是多次尝试后生成结果还是不行

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from dateutil import parser
 from scrapers.general_crawler import general_crawler
 from utils.general_utils import extract_urls, compare_phrase_with_list
 from .get_info import get_info, pb, project_dir, logger, info_rewrite
@@ -40,10 +41,24 @@ async def pipeline(url: str, cache: Dict[str, str] = {}):
 
         expiration = datetime.now() - timedelta(days=expiration_days)
         expiration_date = expiration.strftime('%Y-%m-%d')
-        article_date = int(result['publish_time'])
-        if article_date < int(expiration_date.replace('-', '')):
-            logger.info(f"publish date is {article_date}, too old, skip")
+        article_date=0
+        try:
+            parsed_date = parser.parse(result['publish_time'])
+            article_date = int(parsed_date.strftime('%Y%m%d'))
+        except Exception as e:
+            if logger:
+                logger.error(f'parer log error: {e}')
+        try:
+            if article_date == 0:
+                article_date = int(result['publish_time'])
+            if article_date < int(expiration_date.replace('-', '')):
+                logger.info(f"publish date is {article_date}, too old, skip")
+                continue
+        except Exception as e:
+            if logger:
+                logger.error(f'parer log error: {e}')
             continue
+            
 
         for k, v in cache.items():
             if v:

@@ -10,5 +10,9 @@ core/pb/pb_data/
 core/pb/CHANGELOG.md
 core/pb/LICENSE.md
 core/pb/pocketbase
+core/pb/pocketbase.exe
 core/work_dir/
 /work_dir
+**/*.log
+**/*.exe
+*.log

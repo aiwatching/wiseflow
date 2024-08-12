@@ -11,7 +11,7 @@ import httpx
 from bs4 import BeautifulSoup
 from datetime import datetime
 from urllib.parse import urlparse
-from llms.openai_wrapper import openai_llm
+from llms.openai_wrapper import wraper_llm
 # from llms.siliconflow_wrapper import sfa_llm
 from bs4.element import Comment
 from utils.general_utils import extract_and_convert_dates
@@ -175,7 +175,7 @@ async def general_crawler(url: str, logger) -> tuple[int, Union[set, dict]]:
             {"role": "system", "content": sys_info},
             {"role": "user", "content": html_text}
         ]
-        llm_output = openai_llm(messages, model=model, logger=logger, temperature=0.01)
+        llm_output = wraper_llm(messages, model=model, logger=logger, temperature=0.01)
         result = json_repair.repair_json(llm_output, return_objects=True)
         logger.debug(f"decoded_object: {result}")
 
@@ -205,9 +205,10 @@ async def general_crawler(url: str, logger) -> tuple[int, Union[set, dict]]:
             result["author"] = ""
 
     # 5. post process
-    date_str = extract_and_convert_dates(result['publish_time'])
-    if date_str:
-        result['publish_time'] = date_str
+    if 'publish_time' in result:
+        date_str = extract_and_convert_dates(result['publish_time'])
+        if date_str:
+            result['publish_time'] = date_str
     else:
         result['publish_time'] = datetime.strftime(datetime.today(), "%Y%m%d")
 

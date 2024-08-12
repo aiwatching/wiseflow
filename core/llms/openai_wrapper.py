@@ -1,4 +1,5 @@
 import os
+from llms.siliconflow_wrapper import sfa_llm
 from openai import OpenAI
 
 
@@ -10,6 +11,12 @@ if token:
 else:
     client = OpenAI(base_url=base_url)
 
+def wraper_llm(messages: list, model: str, logger=None, **kwargs) -> str:
+    base_url = os.environ.get('LLM_API_BASE', "")
+    if 'siliconflow' in base_url:
+        return sfa_llm(messages=messages,model=model,logger=logger,kwargs=kwargs)
+    else:
+        return openai_llm(messages=messages,model=model,logger=logger,kwargs=kwargs)
 
 def openai_llm(messages: list, model: str, logger=None, **kwargs) -> str:
 
