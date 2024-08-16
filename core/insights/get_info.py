@@ -1,5 +1,4 @@
-from llms.openai_wrapper import openai_llm
-# from llms.siliconflow_wrapper import sfa_llm
+from llms.openai_wrapper import wraper_llm
 import re
 from utils.general_utils import get_logger_level
 from loguru import logger
@@ -30,7 +29,9 @@ focus_data = pb.read(collection_name='tags', filter=f'activated=True')
 focus_list = [item["name"] for item in focus_data if item["name"]]
 focus_dict = {item["name"]: item["id"] for item in focus_data if item["name"]}
 
-sys_language, _ = locale.getdefaultlocale()
+#sys_language, _ = locale.getdefaultlocale()
+
+sys_language = 'en_US'
 
 if sys_language == 'zh_CN':
 
@@ -61,10 +62,11 @@ Important guidelines to follow: 1) Adhere strictly to the original news content,
 
 def get_info(article_content: str) -> list[dict]:
     # logger.debug(f'receive new article_content:\n{article_content}')
-    result = openai_llm([{'role': 'system', 'content': system_prompt}, {'role': 'user', 'content': article_content}],
+    result = wraper_llm(messages=[{'role': 'system', 'content': system_prompt}, {'role': 'user', 'content': article_content}],
                         model=get_info_model, logger=logger, temperature=0.1)
 
     # results = pattern.findall(result)
+    logger.debug(f"get_info from llm {get_info_model} to result: {result}")
     texts = result.split('<tag>')
     texts = [_.strip() for _ in texts if '</tag>' in _.strip()]
     if not texts:

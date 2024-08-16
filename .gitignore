@@ -15,4 +15,3 @@ core/work_dir/
 /work_dir
 **/*.log
 **/*.exe
-*.log
